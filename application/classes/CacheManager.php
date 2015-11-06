@@ -25,6 +25,17 @@ class CacheManager {
 		self::removeNewVersion();
 	}
 
+	//tags
+	public static function getTags(){
+		$list = self::cache(array(Model::factory('Setting'), 'getTags'), array(), self::$year);
+		$data = array();
+		foreach ($list as $info) $data[$info->tid] = $info;
+		return $data;
+	}
+	public static function removeTags(){
+		self::cache_delete(array(Model::factory('Setting'), 'getTags'));
+	}
+
 	//清理在线用户数据
 	public static function removeOnlineUsers() {
 		$list = Model::factory("App")->onlineUserIDs();

@@ -1,6 +1,108 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class App {
+	//笑话
+	public static function Joke($obj) {
+		$data = array('ret'=>0, 'list'=>array());
+		$tid = intval($obj->req('tid'));
+		$cid = intval($obj->req('cid'));
+		$page = intval($obj->req('page'));
+
+		if ($tid < 1) $tid = 0;
+		if ($cid < 1) $cid = 0;
+		if ($page < 1) $page = 1;
+
+		if ($tid < 1 && $page == 1) {
+			$data['tags'] = array();
+			$list = CacheManager::getTags();
+			foreach ($list as $k => $v)
+				if ($k < 30 && !empty($v->title)) array_push($data['tags'], array(
+					'id'=>$k,
+					'title'=>$v->title,
+					'totals'=>$v->totals+0
+				));
+		}
+
+		$list = Model::factory('Setting')->getJokes(0, $tid, $cid, $page);
+
+		foreach ($list as $v) {
+			array_push($data['list'], array(
+				'id'=>$v->jid,
+				'title'=>$v->title,
+				'text'=> $v->joke,
+				'img'=> $v->img ? BASEURI.'client/upload/joke-img/'.$v->img : '',
+				'video'=> $v->video ? BASEURI.'client/upload/joke-video/'.$v->video : '',
+				'time'=>Util::formatTime2($info->ltime)
+			));
+		}
+
+		return $obj->jsonp($data);
+	}
+	//喜欢笑话
+	public static function JokeLike($obj){
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+		Model::factory('Setting')->updateJokeLikes($id);
+		return $obj->jsonp($data);
+	}
+	//分享笑话
+	public static function JokeShare($obj){
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+		Model::factory('Setting')->updateJokeShares($id);
+		return $obj->jsonp($data);
+	}
+	//美图
+	public static function Meitu($obj) {
+		$data = array('ret'=>0, 'list'=>array());
+		$tid = intval($obj->req('tid'));
+		$cid = intval($obj->req('cid'));
+		$page = intval($obj->req('page'));
+
+		if ($tid < 1) $tid = 0;
+		if ($cid < 1) $cid = 0;
+		if ($page < 1) $page = 1;
+
+		if ($tid < 1 && $page == 1) {
+			$data['tags'] = array();
+			$list = CacheManager::getTags();
+			foreach ($list as $k => $v)
+				if ($k < 30 && !empty($v->title)) array_push($data['tags'], array(
+					'id'=>$k,
+					'title'=>$v->title,
+					'totals'=>$v->totals+0
+				));
+		}
+
+		$list = Model::factory('Setting')->getJokes(1, $tid, $cid, $page);
+
+		foreach ($list as $v) {
+			array_push($data['list'], array(
+				'id'=>$v->jid,
+				'title'=>$v->title,
+				'text'=> $v->joke,
+				'img'=> $v->img ? BASEURI.'client/upload/joke-img/'.$v->img : '',
+				'video'=> $v->video ? BASEURI.'client/upload/joke-video/'.$v->video : '',
+				'time'=>Util::formatTime2($info->ltime)
+			));
+		}
+
+		return $obj->jsonp($data);
+	}
+	//喜欢美图
+	public static function MeituLike($obj){
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+		Model::factory('Setting')->updateJokeLikes($id);
+		return $obj->jsonp($data);
+	}
+	//分享美图
+	public static function MeituShare($obj){
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+		Model::factory('Setting')->updateJokeShares($id);
+		return $obj->jsonp($data);
+	}
 	//登录注册
 	public static function Auth($obj){
 		Util::WriteLog('mobile', 'Auth');

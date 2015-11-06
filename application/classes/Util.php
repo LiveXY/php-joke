@@ -28,6 +28,19 @@ class Util {
 		elseif( $dDay > 7 &&  $dDay <= 30 )	return intval($dDay/7).'周前';
 		else return date("Y-m-d H:i:s",$sTime);
 	}
+	public static function formatTime2($sTime) {
+		if (!$sTime) return '';
+		$cTime      =   time();
+		$dTime      =   $cTime - $sTime;
+		$dDay       =   intval(date("z",$cTime)) - intval(date("z",$sTime));
+		$dYear      =   intval(date("Y",$cTime)) - intval(date("Y",$sTime));
+
+		if( $dTime < 10 ) return '刚刚';
+		elseif( $dTime < 60 ) return $dTime.'秒前';
+		elseif( $dTime < 3600 )	return intval($dTime/60).'分钟前';
+		elseif( $dTime >= 3600 && $dDay == 0  )	return intval($dTime/3600).'小时前';
+		else return date("Y-m-d H:i",$sTime);
+	}
 	public static function getIco($ico){
 		if (!$ico) return '';
 		return RESOURCE.'upload/ico/'.$ico;

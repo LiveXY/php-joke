@@ -1382,7 +1382,7 @@
 	};
 
 	$.fn.uploadSwf = function (options, callback) {
-		var $this = this; defaults = { path: "", url: "", savePath: false, view: true, title: "上傳圖片文件", width: 100, height: 22 };
+		var $this = this; defaults = { path: "/", url: "", savePath: false, view: true, title: "上传图片文件", width: 100, height: 22 };
 		options = $.extend(defaults, options);
 
 		var template_box = '<div class="swf-jupload" id="swf-jupload{1}">\
@@ -1394,7 +1394,7 @@
 			if (data.indexOf('{"err":') != 0) {  return false; }
 			data = eval("(" + data + ")");
 			if (data.msg.length > 0) {
-				data.msg = data.msg.replace(options.path, '');
+				//data.msg = data.msg.replace(options.path, '');
 				me.val((options.savePath ? options.path : "") + data.msg);
 				if (options.view) meprev.find(".jupload-img").attr("src", options.path + data.msg).show();
 			}
@@ -1411,13 +1411,14 @@
 				removeCompleted		: true,
 				fileTypeExts   		: '*.jpg;*.jpeg;*.png;*.gif',
 				fileSizeLimit		: '3MB',
-				multi				: false,
+    			multi				: options.multi ? true : false,
 				auto				: true,
-				debug 				: true,
-				queueSizeLimit 		: 1,
+				//debug 				: true,
+    			queueSizeLimit 		: options.queueSizeLimit || 1,
 				buttonText			: options.title,
 				onFallback			: function() {  },
-				onUploadSuccess 	: function (file, data, response) { $this.uploadSuccess(me, data); }
+				onUploadSuccess 	: function (file, data, response) { $this.uploadSuccess(me, data); },
+                onDialogClose       : options.dialogClose || function() {},
 			});
 		};
 		this.init = function () {

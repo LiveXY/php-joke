@@ -1,6 +1,87 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Util {
+	public static function photoThumb($srcfile, $dstfile, $width, $height, $rate = 100) {
+		$imginfo = getimagesize($srcfile);
+		if(!$imginfo) return false;
+
+		if($imginfo[2] == 1) {
+			if(function_exists("imagecreatefromgif")) {
+				$im = imagecreatefromgif($srcfile);
+			}
+		} elseif($imginfo[2] == 2) {
+			if(function_exists("imagecreatefromjpeg")) {
+				$im = imagecreatefromjpeg($srcfile);
+			}
+		} elseif($imginfo[2] == 3) {
+			if(function_exists("imagecreatefrompng")) {
+				$im = imagecreatefrompng($srcfile);
+			}
+		}
+
+		if(!$im) return false;
+
+		$srcfile_w = imagesx($im);
+		$srcfile_h = imagesy($im);
+
+		// 计算最大放大比例
+		if($srcfile_w <= $width OR $srcfile_h <= $height) {
+			$x = 0;
+			$y = 0;
+			$min = $srcfile_w < $srcfile_h ? $srcfile_w : $srcfile_h;
+			$w = $min;
+			$h = $min;
+		} else if ($srcfile_w/$srcfile_h == $width/$height) { // 比例相同
+			$w = $srcfile_w;
+			$h = $srcfile_h;
+			$x = 0;
+			$y = 0;
+		} else {
+			$w = $srcfile_w;
+			$h = ($srcfile_w/$width) * $height;
+			$x = 0;
+			$y = intval(($srcfile_h-$h) / 2);
+			if($h > $srcfile_h) {
+				$w = $srcfile_h/$height * $width;
+				$h = $srcfile_h;
+				$x = intval(($srcfile_w-$w) / 2);
+				$y = 0;
+			}
+		}
+
+		$result = false;
+		$nim = imagecreatetruecolor($width, $height);
+		if($nim AND imagecopyresampled($nim, $im, 0, 0, $x, $y, $width, $height, $w, $h)) {
+			$result = imagejpeg($nim, $dstfile, $rate);
+		}
+
+		imagedestroy($im);
+		imagedestroy($nim);
+
+		return $result;
+	}
+	public static function photoSize($srcFile) {
+		$info = "";
+		$data = GetImageSize($srcFile,$info);
+		switch ($data[2]) {
+			case 1:
+				if(!function_exists("imagecreatefromgif")) return false;
+				$im = ImageCreateFromGIF($srcFile);
+				break;
+			case 2:
+				if(!function_exists("imagecreatefromjpeg")) return false;
+				$im = ImageCreateFromJpeg($srcFile);
+				break;
+			case 3:
+				if(!function_exists("imagecreatefrompng")) return false;
+				$im = ImageCreateFromPNG($srcFile);
+				break;
+		}
+		$srcW=ImageSX($im);
+		$srcH=ImageSY($im);
+		ImageDestroy($im);
+		return array('w'=>$srcW, 'h'=>$srcH);
+	}
 	public static function getAge($b){
 		if (!$b) return '';
 		$b = strtotime($b);

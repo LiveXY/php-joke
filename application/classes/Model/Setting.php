@@ -1,19 +1,35 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Model_Setting extends Model {
-	public function getJokes($type = 0, $tid = 0, $cid = 0, $page = 1, $pageSize = 10) {
+	public function getJokes($type = 0, $tid = 0, $cid = 0, $key = '', $page = 1, $pageSize = 10) {
 		$sql = '';
 		if ($tid == 0) {
 			$sql = "select * from joke_info as a where type=$type";
 		} else {
 			$sql = "select a.* from joke_info as a inner join joke_tags as b on a.jid=b.jid and b.tid=$tid where type=$type";
 		}
+		if ($key) $sql .= " and (title like '%$key%' or joke like '%$key%')";
 		$sql .= $cid == 1 ? " order by shares desc, likes desc" : " order by a.jid desc";
 
 		$offset = ($page - 1) * $pageSize;
 		$limit = $pageSize;
 		$sql .= " LIMIT {$limit} OFFSET {$offset}";
 		return $this->db->query(Database::SELECT, $sql, true);
+	}
+	public function getJokeCount($type = 0, $tid = 0, $cid = 0, $key = '') {
+		$sql = '';
+		if ($tid == 0) {
+			$sql = "select count(a.jid) count from joke_info as a where type=$type";
+		} else {
+			$sql = "select count(a.jid) count from joke_info as a inner join joke_tags as b on a.jid=b.jid and b.tid=$tid where type=$type";
+		}
+		if ($key) $sql .= " and (title like '%$key%' or joke like '%$key%')";
+		return $this->db->query(Database::SELECT, $sql, true)->current()->count;
+	}
+	public function getJoke($id) {
+		$sql = "select * from joke_info where jid=$id";
+		$query = $this->db->query(Database::SELECT, $sql, true);
+		return $query->valid() ? $query->current() : false;
 	}
 	public function updateJokeLikes($id) {
 		$sql = "update joke_info set likes=likes+1 where tid={$id}";
@@ -22,6 +38,27 @@ class Model_Setting extends Model {
 	public function updateJokeShares($id) {
 		$sql = "update joke_info set shares=shares+1 where tid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
+	}
+	public function insertJoke($data) {
+		$sql = 'insert into joke_info('.$this->fields($data).') values('.$this->values($data).')';
+		return $this->db->query(Database::INSERT, $sql, true);
+	}
+	public function updateJoke($id, $data) {
+		$sql = "update joke_info set ".$this->set($data)." where jid={$id}";
+		return $this->db->query(Database::UPDATE, $sql, true);
+	}
+	public function deleteJoke($id) {
+		$sql = "delete from joke_info where jid={$id}";
+		return $this->db->query(Database::DELETE, $sql, true);
+	}
+	public function deleteJokeTags($id) {
+		$sql = "delete from joke_tags where jid={$id}";
+		return $this->db->query(Database::DELETE, $sql, true);
+	}
+	public function insertJokeTags($data) {
+		if (count($data) == 0) return false;
+		$sql = 'insert into joke_tags('.$this->fields($data[0]).') values'.$this->valuesEx($data);
+		return $this->db->query(Database::INSERT, $sql, true);
 	}
 	//Tags
 	public function getTags(){
@@ -33,11 +70,11 @@ class Model_Setting extends Model {
 		return $this->db->query(Database::INSERT, $sql, true);
 	}
 	public function updateTags($id, $data) {
-		$sql = "update tags set ".$this->set($data)." where id={$id}";
+		$sql = "update tags set ".$this->set($data)." where tid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
 	public function deleteTags($id) {
-		$sql = "delete from tags where id={$id}";
+		$sql = "delete from tags where tid={$id}";
 		return $this->db->query(Database::DELETE, $sql, true);
 	}
 	//版本

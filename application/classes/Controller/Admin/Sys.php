@@ -1,6 +1,69 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 class Controller_Admin_Sys extends AdminController {
+	//版本管理
+	public function action_version_list() {
+		$this->checkFunction("VersionManage");
+
+		$DATA = array();
+		$DATA['list']			= CacheManager::getVersions();
+		$DATA['user_right'] 	= $this->funcOp('VersionManage');
+
+		View::set_global('title', '管理');
+		echo $this->iframeView('admin/sys/version_list', $DATA);
+	}
+	public function action_version_op(){
+		$id 	= intval($this->request->query('id'));
+		$list	= CacheManager::getVersions();
+
+		$DATA['id'] 			= $id;
+		$DATA['info'] 			= isset($list[$id]) ? $list[$id] : false;
+		$DATA['user_right'] 	= $this->funcOp('VersionManage');
+		$DATA['post']			= intval($this->request->query('post'));
+		$DATA['fileExists']		= !isset($list[$id]) ? false : file_exists(RESOURCE_PATH.'upload/version/'.$list[$id]->vname.'.zip');
+
+		View::set_global('title', '操作');
+		echo $this->iframeView('admin/sys/version_op', $DATA);
+	}
+	public function action_version_post(){
+		$id 	= intval($this->request->query('id'));
+
+		$txtVID					= $this->request->post('txtVID');
+		$txtVName				= $this->request->post('txtVName');
+		$txtVText				= $this->request->post('txtVText');
+		$txtStatus				= intval($this->request->post('txtStatus'));
+
+		$data = array(
+			'vid'				=> $txtVID,
+			'vname'				=> $txtVName,
+			'vtext'				=> $txtVText,
+			'status'			=> $txtStatus,
+		);
+		if (!file_exists(RESOURCE_PATH.'upload/version/'.$txtVName.'.zip')) $data['status'] = '0';
+
+		if ($id <= 0) { //添加
+			$data['ltime'] = TIMESTAMP;
+			$this->checkFunction('VersionManage', "add");
+
+			Model::factory('Setting')->insertVersion($data);
+		} else { //修改
+			$this->checkFunction('VersionManage', "edit");
+
+			Model::factory('Setting')->updateVersion($id, $data);
+		}
+		CacheManager::removeVersions();
+		return $this->redirect("admin/sys/version_op?post=1&id=$id");
+	}
+	public function action_version_delete(){
+		$this->checkFunction('VersionManage', "delete");
+
+		$id 	= intval($this->request->query('id'));
+		if ($id < 1) $this->paramError();
+
+		Model::factory('Setting')->deleteVersion($id);
+		CacheManager::removeVersions();
+		return $this->redirect('admin/sys/version_list');
+	}
 	public function action_index() { }
 	public function action_user_control__(){
 		$ids = $this->request->query('ids');

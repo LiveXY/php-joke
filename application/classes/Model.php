@@ -53,14 +53,11 @@ class Model extends Kohana_Model {
 		return implode(',', $sql);
 	}
 	//批量insert＋
-	public function combinateSql($data){
-		$insertValue = '';
-		foreach ($data as $value){
-			if($insertValue)	$insertValue .= ",(".$this->values($value).")";
-			else				$insertValue .= "values(".$this->values($value).")";
+	public function valuesEx($data){
+		$sql = array();
+		foreach($data as $row) {
+			$sql[] = '('.$this->values($row).')';
 		}
-		$result['insertKey'] 	= $data[0];
-		$result['insertValue'] 	= $insertValue;
-		return $result;
+		return implode(',', $sql);
 	}
 }

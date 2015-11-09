@@ -49,6 +49,10 @@ class Model_App extends Model {
 		$this->db->query(Database::UPDATE, $sql, true);
 		return 1;
 	}
+	public function deleteOnline($uid) {
+		$sql = "delete from user_online where user_id=$uid";
+		return $this->db->query(DATABASE::DELETE, $sql, true);
+	}
 
 	public function logUserLogin($data) {
 		$sql = 'insert into log_user_login('.$this->fields($data).') values('.$this->values($data).')';

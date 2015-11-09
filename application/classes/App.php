@@ -193,7 +193,6 @@ class App {
 		$data["login_times"] = $user->login_times + 1;
 		$data['login_ip'] = IpLocation::getIP();
 		$data['login_date'] = TIMESTAMP;
-		if (empty($user->nickname)) $data['nickname'] = Util::randName();
 
 		Model::factory("Sys")->updateUser($user->uid, $data);
 		CacheManager::removeUser($user->uid);

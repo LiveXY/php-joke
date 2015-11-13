@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Model_Setting extends Model {
+	public function myJokes($uid, $page = 1, $pageSize = 10) {
+		$sql = "select a.* from joke_info as a inner join user_like as b on a.jid=b.jid and uid=$uid order by b.ltime desc";
+
+		$offset = ($page - 1) * $pageSize;
+		$limit = $pageSize;
+		$sql .= " LIMIT {$limit} OFFSET {$offset}";
+		return $this->db->query(Database::SELECT, $sql, true);
+	}
 	public function getJokes($type = 0, $tid = 0, $cid = 0, $key = '', $page = 1, $pageSize = 10) {
 		$sql = '';
 		if ($tid == 0) {
@@ -32,11 +40,21 @@ class Model_Setting extends Model {
 		return $query->valid() ? $query->current() : false;
 	}
 	public function updateJokeLikes($id) {
-		$sql = "update joke_info set likes=likes+1 where tid={$id}";
+		$sql = "update joke_info set likes=likes+1 where jid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
+	public function updateUserLike($id, $uid) {
+		$sql = "update user_like set likes=likes+1 where jid={$id} and uid={$uid}";
+		$result = $this->db->query(Database::UPDATE, $sql, true);
+		if (!$result) {
+			$time = TIMESTAMP;
+			$sql = "insert into user_like(uid, jid, likes, ltime) values($uid, $id, 1, $time)";
+			return $this->db->query(Database::INSERT, $sql, true);
+		}
+		return $result;
+	}
 	public function updateJokeShares($id) {
-		$sql = "update joke_info set shares=shares+1 where tid={$id}";
+		$sql = "update joke_info set shares=shares+1 where jid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
 	public function insertJoke($data) {

@@ -8,7 +8,7 @@ class App {
 
 		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
 
-		$list = Model::factory('Setting')->myJokes($page);
+		$list = Model::factory('Setting')->myJokes($obj->uid, $page);
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
@@ -23,6 +23,7 @@ class App {
 				'shares'=>$v->shares,
 			));
 		}
+		return $obj->jsonp($data);
 	}
 	//笑话
 	public static function Joke($obj) {
@@ -69,7 +70,8 @@ class App {
 		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
-		Model::factory('Setting')->updateJokeLikes($id);
+		$result = Model::factory('Setting')->updateJokeLikes($id);
+		if ($result) Model::factory('Setting')->updateUserLike($id, $obj->uid);
 		return $obj->jsonp($data);
 	}
 	//分享笑话

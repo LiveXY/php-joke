@@ -6,7 +6,7 @@ class Controller extends Kohana_Controller {
 	}
 	//jsonp
 	public function jsonp($data, $callback = 'callback') {
-		@header('Content-Type: application/json');
+		@header('Content-Type: application/json; charset=utf-8');
 		@header("Expires:-1");
 		@header("Cache-Control:no-cache");
 		@header("Pragma:no-cache");

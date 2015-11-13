@@ -24,6 +24,9 @@
 					<textarea class="checkboxlist" id="txtTags" name="txtTags"><?= $info ? $info->tags : "" ?></textarea>
 				</td>
 			</tr><tr>
+				<th>评分：</th>
+				<td class="pl5"><input type="text" class="input_text" name="txtScore" value="<?= $info ? $info->score?:'' : "" ?>" /></td>
+			</tr><tr>
 				<td></td>
 				<td class="pl5">
 					<?php if(($id <1 && $user_right['add']) || $user_right['edit']):?>

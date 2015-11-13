@@ -198,11 +198,13 @@ class Controller_Admin_Setting extends AdminController {
 		$txtTitle				= $this->request->post('txtTitle');
 		$txtJoke				= $this->request->post('txtJoke');
 		$txtTags 				= trim($this->request->post('txtTags'),';');
+		$txtScore				= intval($this->request->post('txtScore'));
 
 		$data = array(
 			'title'				=> $txtTitle,
 			'joke'				=> $txtJoke,
-			'tags'				=> $txtTags
+			'tags'				=> $txtTags,
+			'score'				=> $txtScore,
 		);
 		$result = false;
 

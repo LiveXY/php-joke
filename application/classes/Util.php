@@ -1,6 +1,12 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Util {
+
+	public static function aes_encode($uid, $key, $text){
+		$iv = substr($key, 0, 16 - strlen($uid)).$uid;
+		$crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $text, MCRYPT_MODE_CBC, $iv);
+		return base64_encode($crypttext);
+	}
 	public static function photoThumb($srcfile, $dstfile, $width, $height, $rate = 100) {
 		$imginfo = getimagesize($srcfile);
 		if(!$imginfo) return false;

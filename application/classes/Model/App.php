@@ -58,6 +58,9 @@ class Model_App extends Model {
 		$sql = 'insert into log_user_login('.$this->fields($data).') values('.$this->values($data).')';
 		return $this->db->query(Database::INSERT, $sql, true);
 	}
-
+	public function insertUserJoke($data) {
+		$sql = 'insert into user_joke('.$this->fields($data).') values('.$this->values($data).')';
+		return $this->db->query(Database::INSERT, $sql, true);
+	}
 
 }

@@ -21,6 +21,7 @@ class Controller_App extends AppController {
 	public function action_feedback() { App::Feedback($this); } //反馈
 	public function action_search() { App::Search($this); } //搜索
 	public function action_likes() { App::Likes($this); } //喜欢
+	public function action_upload() { App::Upload($this); } //投稿
 
 	public function action_joke() { App::Joke($this); } //赞笑话
 	public function action_jokeLike() { App::JokeLike($this); } //赞笑话

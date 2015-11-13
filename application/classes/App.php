@@ -1,9 +1,35 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class App {
+	public static function Likes($obj){
+		$obj->checkData();
+		$page = intval($obj->req('page'));
+		if ($page < 1) $page = 1;
+
+		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
+
+		$list = Model::factory('Setting')->myJokes($page);
+		foreach ($list as $v) {
+			array_push($data['list'], array(
+				'id'=>$v->jid,
+				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
+				'time'=>Util::formatTime2($v->ltime),
+				'width'=>$v->width,
+				'height'=>$v->height,
+				'type'=>$v->type,
+				'likes'=>$v->likes,
+				'shares'=>$v->shares,
+			));
+		}
+	}
 	//笑话
 	public static function Joke($obj) {
-		$data = array('ret'=>0, 'list'=>array());
+		$obj->checkData();
+
+		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
+
 		$tid = intval($obj->req('tid'));
 		$cid = intval($obj->req('cid'));
 		$page = intval($obj->req('page'));
@@ -23,16 +49,16 @@ class App {
 				));
 		}
 
-		$list = Model::factory('Setting')->getJokes(0, $tid, $cid, $page);
+		$list = Model::factory('Setting')->getJokes(0, $tid, $cid, '', $page);
 
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=>$v->title,
-				'text'=> $v->joke,
-				'img'=> $v->img ? BASEURI.'client/upload/joke-img/'.$v->img : '',
-				'video'=> $v->video ? BASEURI.'client/upload/joke-video/'.$v->video : '',
-				'time'=>Util::formatTime2($info->ltime)
+				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'time'=>Util::formatTime2($v->ltime),
+				'likes'=>$v->likes,
+				'shares'=>$v->shares,
 			));
 		}
 
@@ -40,6 +66,7 @@ class App {
 	}
 	//喜欢笑话
 	public static function JokeLike($obj){
+		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
 		Model::factory('Setting')->updateJokeLikes($id);
@@ -47,6 +74,7 @@ class App {
 	}
 	//分享笑话
 	public static function JokeShare($obj){
+		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
 		Model::factory('Setting')->updateJokeShares($id);
@@ -54,7 +82,10 @@ class App {
 	}
 	//美图
 	public static function Meitu($obj) {
-		$data = array('ret'=>0, 'list'=>array());
+		$obj->checkData();
+
+		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
+
 		$tid = intval($obj->req('tid'));
 		$cid = intval($obj->req('cid'));
 		$page = intval($obj->req('page'));
@@ -74,16 +105,18 @@ class App {
 				));
 		}
 
-		$list = Model::factory('Setting')->getJokes(1, $tid, $cid, $page);
+		$list = Model::factory('Setting')->getJokes(1, $tid, $cid, '', $page);
 
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=>$v->title,
-				'text'=> $v->joke,
-				'img'=> $v->img ? BASEURI.'client/upload/joke-img/'.$v->img : '',
-				'video'=> $v->video ? BASEURI.'client/upload/joke-video/'.$v->video : '',
-				'time'=>Util::formatTime2($info->ltime)
+				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
+				'time'=>Util::formatTime2($v->ltime),
+				'width'=>$v->width,
+				'height'=>$v->height,
+				'likes'=>$v->likes,
+				'shares'=>$v->shares,
 			));
 		}
 
@@ -91,6 +124,7 @@ class App {
 	}
 	//喜欢美图
 	public static function MeituLike($obj){
+		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
 		Model::factory('Setting')->updateJokeLikes($id);
@@ -98,6 +132,7 @@ class App {
 	}
 	//分享美图
 	public static function MeituShare($obj){
+		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
 		Model::factory('Setting')->updateJokeShares($id);
@@ -144,6 +179,7 @@ class App {
 		$obj->jsonp(array('ret'=>0));
 	}
 	public static function Version($obj) {
+		$obj->checkData();
 		$data = array('ret'=>0, 'list'=>array());
 		$version = intval($obj->req('version'));
 		$list = CacheManager::getVersions();
@@ -177,6 +213,15 @@ class App {
 		if (!$result) return $obj->jsonp(array('ret'=>1, "msg" => $obj->lang['operator_failure']));
 		return $obj->jsonp(array('ret'=>0));
 	}
+	//投稿
+	public static function Upload($obj){
+		$obj->checkData();
+		$text = KFilter::Filter($obj->req('text'));
+		if (!$text) return $obj->jsonp(array('ret'=>1, "msg" => $obj->lang['operator_failure']));
+		$result = Model::factory('App')->insertUserJoke(array('uid'=>$obj->uid, 'joke'=>$text, 'ltime'=>TIMESTAMP));
+		if (!$result) return $obj->jsonp(array('ret'=>1, "msg" => $obj->lang['operator_failure']));
+		return $obj->jsonp(array('ret'=>0));
+	}
 	private static function getUser($user, $vid = 0) {
 		unset($user->password, $user->user_salt, $user->bundleid);
 		$user->update = 0;
@@ -184,6 +229,9 @@ class App {
 			$info = CacheManager::getNewVersion();
 			if ($info && $info->vid > $vid) $user->update = 1;
 		}
+		$admin = CacheManager::getAdmin($user->uid);
+		if ($admin) $user->admin = 1;
+
 		return $user;
 	}
 	//更新用户登录数据

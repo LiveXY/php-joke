@@ -34,12 +34,13 @@ class App {
 		$tid = intval($obj->req('tid'));
 		$cid = intval($obj->req('cid'));
 		$page = intval($obj->req('page'));
+		$key = $obj->req('key');
 
 		if ($tid < 1) $tid = 0;
 		if ($cid < 1) $cid = 0;
 		if ($page < 1) $page = 1;
 
-		if ($tid < 1 && $page == 1) {
+		if ($tid < 1 && $page == 1 && empty($key)) {
 			$data['tags'] = array();
 			$list = CacheManager::getTags();
 			foreach ($list as $k => $v)
@@ -50,7 +51,7 @@ class App {
 				));
 		}
 
-		$list = Model::factory('Setting')->getJokes(0, $tid, $cid, '', $page);
+		$list = Model::factory('Setting')->getJokes(0, $tid, $cid, $key, $page);
 
 		foreach ($list as $v) {
 			array_push($data['list'], array(

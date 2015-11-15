@@ -43,7 +43,7 @@ class App {
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'title'=> empty($v->title) ? '' : Util::aes_encode($obj->uid, $data['sign'], $v->title),
 				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
 			));
 		}

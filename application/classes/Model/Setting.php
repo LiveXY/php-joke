@@ -103,6 +103,33 @@ class Model_Setting extends Model {
 		$sql = "delete from tags where tid={$id}";
 		return $this->db->query(Database::DELETE, $sql, true);
 	}
+	//用户反馈
+	public function getFeedbackList($page, $pageSize = 25){
+		$sql 	= "select * from user_feedback order by fid desc";
+
+		$offset = ($page - 1) * $pageSize;
+		$limit = $pageSize;
+		$sql .= " limit {$limit} offset {$offset}";
+
+		return $this->db->query(Database::SELECT, $sql, true);
+	}
+	public function getFeedbackCount(){
+		$sql 	= "select count(fid) count from user_feedback";
+		$query = $this->db->query(Database::SELECT, $sql, true);
+		return $query->current()->count;
+	}
+	public function insertFeedback($data) {
+		$sql = 'insert into user_feedback('.$this->fields($data).') values('.$this->values($data).')';
+		return $this->db->query(Database::INSERT, $sql, true);
+	}
+	public function updateFeedback($id,$data) {
+		$sql = "update user_feedback set ".$this->set($data)." where fid={$id}";
+		return $this->db->query(Database::UPDATE, $sql, true);
+	}
+	public function deleteFeedback($id) {
+		$sql = "delete from user_feedback where fid={$id}";
+		return $this->db->query(Database::DELETE, $sql, true);
+	}
 	//版本
 	public function getVersions() {
 		$sql = "select * from version order by vid desc";

@@ -253,4 +253,29 @@ class Controller_Admin_Setting extends AdminController {
 		View::set_global('title', '管理');
 		echo $this->iframeView('admin/setting/cache_list', array());
 	}
+	//用户反馈管理
+	public function action_feedback_list() {
+		$page = intval($this->request->query('page'));
+		if ($page < 1) $page = 1;
+		$this->checkFunction("FeedbackManage");
+
+		$DATA = array();
+		$DATA['page'] 			= $page;
+		$DATA['list']			= Model::factory('Setting')->getFeedbackList($page);
+		$DATA['totals']			= Model::factory('Setting')->getFeedbackCount();
+		$DATA['user_right'] 	= $this->funcOp('FeedbackManage');
+
+		View::set_global('title', '管理');
+		echo $this->iframeView('admin/setting/feedback_list', $DATA);
+	}
+	public function action_feedback_delete(){
+		$this->checkFunction('FeedbackManage', "delete");
+
+		$id 	= intval($this->request->query('id'));
+		$page 	= intval($this->request->query('page'));
+		if ($id < 1) $this->paramError();
+
+		Model::factory('Setting')->deleteFeedback($id);
+		return $this->redirect('admin/setting/feedback_list?page='.$page);
+	}
 }

@@ -31,4 +31,6 @@ class Controller_App extends AppController {
 	public function action_meituLike() { App::MeituLike($this); } //赞美图
 	public function action_meituShare() { App::MeituShare($this); } //分享美图
 
+	public function action_audit() { App::Audit($this); } //审核
+	public function action_auditPost() { App::AuditPost($this); } //修改
 }

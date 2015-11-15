@@ -8,7 +8,7 @@ define('RESOURCE_PATH', DOCROOT.'client/');
 define('UseCache', 'memcache'); //memcache, redis
 define('UseDB', 'sqlite'); //mysql, sqlite
 define('Crypt3DesIV', '1234567!');
-define('Crypt3DesKey', '18');
+define('Crypt3DesKey', 'joke');
 
 define('SMTPHost', 'smtp.mailgun.org');
 define('SMTPUser', '');

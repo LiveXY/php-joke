@@ -1,6 +1,63 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class App {
+	public static function AuditPost($obj){
+		$obj->checkData();
+		$admin = CacheManager::getAdmin($obj->uid);
+		if (!$admin) $obj->paramError();
+
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+		$title = $obj->req('title');
+		$text = $obj->req('text');
+		$tags = $obj->req('tags');
+		$score = intval($obj->req('score'));
+		if ($id < 1 || empty($title) || empty($text) || empty($tags) || $score < 1 || $score > 100) $obj->paramError();
+		$result = Model::factory('Setting')->updateUserJoke($id, array('status'=>1));
+		if ($result) {
+			$joke = array('title'=>$title, 'joke'=>$text, 'type'=>0, 'ltime'=>TIMESTAMP,'score'=>$score, 'tags'=> implode(';', $tags));
+			$result = Model::factory('Setting')->insertJoke($joke);
+			if ($result) {
+				$jid = $result[0]; $joke = array();
+				foreach ($tags as $tid) {
+					if ($tid < 1) continue;
+					$joke[] = array('jid'=>$jid, 'tid'=>$tid);
+				}
+				Model::factory('Setting')->insertJokeTags($joke);
+			}
+		}
+		$data['ret'] = $result ? 0 : 1;
+		return $obj->jsonp($data);
+	}
+	public static function Audit($obj){
+		$obj->checkData();
+		$admin = CacheManager::getAdmin($obj->uid);
+		if (!$admin) $obj->paramError();
+
+		$tag = intval($obj->req('tag'));
+
+		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
+
+		$list = Model::factory('Setting')->audit();
+		foreach ($list as $v) {
+			array_push($data['list'], array(
+				'id'=>$v->jid,
+				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+			));
+		}
+		if ($tag == 1) {
+			$data['tags'] = array();
+			$list = CacheManager::getTags();
+			foreach ($list as $k => $v)
+				if ($k < 30 && !empty($v->title)) array_push($data['tags'], array(
+					'id'=>$k,
+					'title'=>Util::aes_encode($obj->uid, $data['sign'], $v->title),
+					'totals'=>$v->totals+0
+				));
+		}
+		return $obj->jsonp($data);
+	}
 	public static function Likes($obj){
 		$obj->checkData();
 		$page = intval($obj->req('page'));
@@ -46,7 +103,7 @@ class App {
 			foreach ($list as $k => $v)
 				if ($k < 30 && !empty($v->title)) array_push($data['tags'], array(
 					'id'=>$k,
-					'title'=>$v->title,
+					'title'=>Util::aes_encode($obj->uid, $data['sign'], $v->title),
 					'totals'=>$v->totals+0
 				));
 		}
@@ -58,6 +115,7 @@ class App {
 				'id'=>$v->jid,
 				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
 				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'likes'=>$v->likes,
 				'shares'=>$v->shares,
@@ -71,6 +129,7 @@ class App {
 		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
+		if ($id < 1) $obj->paramError();
 		$result = Model::factory('Setting')->updateJokeLikes($id);
 		if ($result) Model::factory('Setting')->updateUserLike($id, $obj->uid);
 		return $obj->jsonp($data);
@@ -80,6 +139,7 @@ class App {
 		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
+		if ($id < 1) $obj->paramError();
 		Model::factory('Setting')->updateJokeShares($id);
 		return $obj->jsonp($data);
 	}
@@ -114,6 +174,7 @@ class App {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
 				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
 				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'width'=>$v->width,
@@ -130,6 +191,7 @@ class App {
 		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
+		if ($id < 1) $obj->paramError();
 		Model::factory('Setting')->updateJokeLikes($id);
 		return $obj->jsonp($data);
 	}
@@ -138,6 +200,7 @@ class App {
 		$obj->checkData();
 		$data = array('ret'=>0);
 		$id = intval($obj->req('id'));
+		if ($id < 1) $obj->paramError();
 		Model::factory('Setting')->updateJokeShares($id);
 		return $obj->jsonp($data);
 	}

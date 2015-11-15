@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Model_Setting extends Model {
+	public function updateUserJoke($id, $data) {
+		$sql = "update user_joke set ".$this->set($data)." where jid={$id}";
+		return $this->db->query(Database::UPDATE, $sql, true);
+	}
+	public function audit() {
+		$sql = "select * from user_joke where status=0 order by random() limit 10";
+		return $this->db->query(Database::SELECT, $sql, true);
+	}
 	public function myJokes($uid, $page = 1, $pageSize = 10) {
 		$sql = "select a.* from joke_info as a inner join user_like as b on a.jid=b.jid and uid=$uid order by b.ltime desc";
 

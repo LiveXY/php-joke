@@ -12,7 +12,8 @@ class App {
 		$text = $obj->req('text');
 		$tags = $obj->req('tags');
 		$score = intval($obj->req('score'));
-		if ($id < 1 || empty($title) || empty($text) || empty($tags) || $score < 1 || $score > 100) $obj->paramError();
+		if (!empty($tags)) $tags = explode(';', trim($tags, ';'));
+		if ($id < 1 || empty($title) || empty($text) || empty($tags) || !is_array($tags) || $score < 1 || $score > 100) $obj->paramError();
 		$result = Model::factory('Setting')->updateUserJoke($id, array('status'=>1));
 		if ($result) {
 			$joke = array('title'=>$title, 'joke'=>$text, 'type'=>0, 'ltime'=>TIMESTAMP,'score'=>$score, 'tags'=> implode(';', $tags));

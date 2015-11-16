@@ -5,7 +5,7 @@
 	</div>
 	<div class="content-list">
 		<?php if(($id <1 && $user_right['add']) || $user_right['edit']):?>
-		<form method="post" name="data" action="<?=BASEURI?>admin/setting/joke_post?id=<?=$id ?>">
+		<form method="post" name="data" action="<?=BASEURI?>admin/setting/audit_post?id=<?=$id ?>">
 		<?php endif;?>
 		<table class="table-form">
 			<colgroup>

@@ -206,24 +206,30 @@ class Controller_Admin_Setting extends AdminController {
 			'joke'				=> $txtJoke,
 			'tags'				=> $txtTags,
 			'score'				=> $txtScore,
-			'ltime'				=> TIMESTAMP
 		);
+		$result = false;
 
-		$this->checkFunction('JokeManage', "add");
-		$result = Model::factory('Setting')->insertJoke($data);
+		if ($id <= 0) { //添加
+			$data['ltime'] = TIMESTAMP;
+			$this->checkFunction('JokeManage', "add");
 
+			$result = Model::factory('Setting')->insertJoke($data);
+			$id = $result[0];
+		} else { //修改
+			$this->checkFunction('JokeManage', "edit");
+
+			$result = Model::factory('Setting')->updateJoke($id, $data);
+		}
 		if ($result) {
-			$jid = $result[0];
-			Model::factory('Setting')->deleteUserJoke($id);
 			Model::factory('Setting')->deleteJokeTags($id);
 			$data = array(); $tags = explode(';', $txtTags);
 			foreach ($tags as $tid) {
 				if ($tid < 1) continue;
-				$data[] = array('jid'=>$jid, 'tid'=>$tid);
+				$data[] = array('jid'=>$id, 'tid'=>$tid);
 			}
 			Model::factory('Setting')->insertJokeTags($data);
 		}
-		echo "<script>alert('审核成功！');top.tab.refresh('JokeManage', true);top.tab.refresh('AuditJoke', true);top.tab.close();</script>";
+		return $this->redirect("admin/setting/joke_op?post=1&id=$id");
 	}
 	public function action_joke_delete(){
 		$this->checkFunction('JokeManage', "delete");
@@ -282,30 +288,24 @@ class Controller_Admin_Setting extends AdminController {
 			'joke'				=> $txtJoke,
 			'tags'				=> $txtTags,
 			'score'				=> $txtScore,
+			'ltime'				=> TIMESTAMP
 		);
-		$result = false;
 
-		if ($id <= 0) { //添加
-			$data['ltime'] = TIMESTAMP;
-			$this->checkFunction('AuditJoke', "add");
+		$this->checkFunction('JokeManage', "add");
+		$result = Model::factory('Setting')->insertJoke($data);
 
-			$result = Model::factory('Setting')->insertJoke($data);
-			$id = $result[0];
-		} else { //修改
-			$this->checkFunction('AuditJoke', "edit");
-
-			$result = Model::factory('Setting')->updateJoke($id, $data);
-		}
 		if ($result) {
+			$jid = $result[0];
+			Model::factory('Setting')->deleteUserJoke($id);
 			Model::factory('Setting')->deleteJokeTags($id);
 			$data = array(); $tags = explode(';', $txtTags);
 			foreach ($tags as $tid) {
 				if ($tid < 1) continue;
-				$data[] = array('jid'=>$id, 'tid'=>$tid);
+				$data[] = array('jid'=>$jid, 'tid'=>$tid);
 			}
 			Model::factory('Setting')->insertJokeTags($data);
 		}
-		return $this->redirect("admin/setting/audit_op?post=1&id=$id");
+		echo "<script>alert('审核成功！');top.tab.refresh('JokeManage', true);top.tab.refresh('AuditJoke', true);top.tab.close();</script>";
 	}
 	public function action_audit_delete(){
 		$this->checkFunction('AuditJoke', "delete");

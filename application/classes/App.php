@@ -9,6 +9,19 @@ class App {
 		if ($p && $p['android']) $t = 2;
 		echo View::factory('down', array('t'=>$t));
 	}
+	public static function AuditDelete($obj) {
+		$obj->checkData();
+		$admin = CacheManager::getAdmin($obj->uid);
+		if (!$admin) $obj->paramError();
+
+		$data = array('ret'=>0);
+		$id = intval($obj->req('id'));
+
+		if ($id < 1) $obj->paramError();
+		$result = Model::factory('Setting')->deleteUserJoke($id);
+		$data['ret'] = $result ? 0 : 1;
+		return $obj->jsonp($data);
+	}
 	public static function AuditPost($obj){
 		$obj->checkData();
 		$admin = CacheManager::getAdmin($obj->uid);

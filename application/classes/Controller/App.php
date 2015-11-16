@@ -34,4 +34,5 @@ class Controller_App extends AppController {
 
 	public function action_audit() { App::Audit($this); } //审核
 	public function action_auditPost() { App::AuditPost($this); } //修改
+	public function action_auditDelete() { App::AuditDelete($this); } //删除
 }

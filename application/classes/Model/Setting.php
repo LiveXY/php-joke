@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Model_Setting extends Model {
+	public function deleteUserJoke($id) {
+		$sql = "delete from user_joke where jid={$id}";
+		return $this->db->query(Database::DELETE, $sql, true);
+	}
 	public function updateUserJoke($id, $data) {
 		$sql = "update user_joke set ".$this->set($data)." where jid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);

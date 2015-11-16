@@ -7,6 +7,9 @@ class Controller_Home extends AppController {
 		if ($p && $p['iphone']) $t = 1;
 		if ($p && $p['ipad']) $t = 1;
 		if ($p && $p['android']) $t = 2;
-		echo View::factory('index', array('t'=>$t));
+		if (Util::isWeixinOpen())
+			echo View::factory('down', array('t'=>$t));
+		else
+			echo View::factory('index', array('t'=>$t));
 	}
 }

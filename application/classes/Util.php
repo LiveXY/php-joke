@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Util {
+	public static function isWeixinOpen() {
+		$ua = $_SERVER['HTTP_USER_AGENT'];
+		if (!$ua) return false;
+
+		$ua = strtolower($ua);
+		$weixin = strstr($ua, 'micromessenger');
+		return $weixin !== false;
+	}
 	public static function getMobile() {
 		$ua = $_SERVER['HTTP_USER_AGENT'];
 		if (!$ua) return false;

@@ -1,6 +1,26 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Model_Setting extends Model {
+	public function getUserJoke($id) {
+		$sql = "select * from user_joke where jid=$id";
+		$query = $this->db->query(Database::SELECT, $sql, true);
+		return $query->valid() ? $query->current() : false;
+	}
+	public function getAuditList($key = '', $page = 1, $pageSize = 25) {
+		$sql = "select * from user_joke where 1=1 ";
+		if ($key) $sql .= " and (title like '%$key%' or joke like '%$key%')";
+		$sql .= ' order by jid desc ';
+
+		$offset = ($page - 1) * $pageSize;
+		$limit = $pageSize;
+		$sql .= " LIMIT {$limit} OFFSET {$offset}";
+		return $this->db->query(Database::SELECT, $sql, true);
+	}
+	public function getAuditCount($key = '') {
+		$sql = "select count(jid) count from user_joke where 1=1 ";
+		if ($key) $sql .= " and (title like '%$key%' or joke like '%$key%')";
+		return $this->db->query(Database::SELECT, $sql, true)->current()->count;
+	}
 	public function deleteUserJoke($id) {
 		$sql = "delete from user_joke where jid={$id}";
 		return $this->db->query(Database::DELETE, $sql, true);
@@ -10,7 +30,7 @@ class Model_Setting extends Model {
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
 	public function audit() {
-		$sql = "select * from user_joke where status=0 order by random() limit 10";
+		$sql = "select * from user_joke order by random() limit 10";
 		return $this->db->query(Database::SELECT, $sql, true);
 	}
 	public function myJokes($uid, $page = 1, $pageSize = 10) {

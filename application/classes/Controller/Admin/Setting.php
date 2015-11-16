@@ -194,6 +194,83 @@ class Controller_Admin_Setting extends AdminController {
 	}
 	public function action_joke_post(){
 		$id 	= intval($this->request->query('id'));
+		if ($id < 1) $this->paramError();
+
+		$txtTitle				= $this->request->post('txtTitle');
+		$txtJoke				= $this->request->post('txtJoke');
+		$txtTags 				= trim($this->request->post('txtTags'),';');
+		$txtScore				= intval($this->request->post('txtScore'));
+
+		$data = array(
+			'title'				=> $txtTitle,
+			'joke'				=> $txtJoke,
+			'tags'				=> $txtTags,
+			'score'				=> $txtScore,
+			'ltime'				=> TIMESTAMP
+		);
+
+		$this->checkFunction('JokeManage', "add");
+		$result = Model::factory('Setting')->insertJoke($data);
+
+		if ($result) {
+			$jid = $result[0];
+			Model::factory('Setting')->deleteUserJoke($id);
+			Model::factory('Setting')->deleteJokeTags($id);
+			$data = array(); $tags = explode(';', $txtTags);
+			foreach ($tags as $tid) {
+				if ($tid < 1) continue;
+				$data[] = array('jid'=>$jid, 'tid'=>$tid);
+			}
+			Model::factory('Setting')->insertJokeTags($data);
+		}
+		echo "<script>alert('审核成功！');top.tab.refresh('JokeManage', true);top.tab.refresh('AuditJoke', true);top.tab.close();</script>";
+	}
+	public function action_joke_delete(){
+		$this->checkFunction('JokeManage', "delete");
+		$page = intval($this->req('page'));
+		if ($page < 1) $page = 1;
+		$key = $this->req('key');
+
+		$id 	= intval($this->request->query('id'));
+		if ($id < 1) $this->paramError();
+
+		$result = Model::factory('Setting')->deleteJoke($id);
+		if ($result) Model::factory('Setting')->deleteJokeTags($id);
+		return $this->redirect("admin/setting/joke_list?tid=$tid&key=$key&page=$page");
+	}
+	public function action_index(){}
+	//笑话审核
+	public function action_audit_list() {
+		$this->checkFunction("AuditJoke");
+		$page = intval($this->req('page'));
+		if ($page < 1) $page = 1;
+		$key = $this->req('key');
+
+		$DATA = array();
+		$DATA['page']			= $page;
+		$DATA['key']			= $key;
+		$DATA['list']			= Model::factory('Setting')->getAuditList($key, $page, 25);
+		$DATA['totals']			= Model::factory('Setting')->getAuditCount($key);
+		$DATA['user_right'] 	= $this->funcOp('AuditJoke');
+
+		View::set_global('title', '管理');
+		echo $this->iframeView('admin/setting/audit_list', $DATA);
+	}
+	public function action_audit_op(){
+		$id 	= intval($this->request->query('id'));
+		$info	= Model::factory('Setting')->getUserJoke($id);
+
+		$DATA['id'] 			= $id;
+		$DATA['info'] 			= $info;
+		$DATA['user_right'] 	= $this->funcOp('AuditJoke');
+		$DATA['post']			= intval($this->request->query('post'));
+		$DATA['tags']			= CacheManager::getTags();
+
+		View::set_global('title', '操作');
+		echo $this->iframeView('admin/setting/audit_op', $DATA);
+	}
+	public function action_audit_post(){
+		$id 	= intval($this->request->query('id'));
 
 		$txtTitle				= $this->request->post('txtTitle');
 		$txtJoke				= $this->request->post('txtJoke');
@@ -210,12 +287,12 @@ class Controller_Admin_Setting extends AdminController {
 
 		if ($id <= 0) { //添加
 			$data['ltime'] = TIMESTAMP;
-			$this->checkFunction('JokeManage', "add");
+			$this->checkFunction('AuditJoke', "add");
 
 			$result = Model::factory('Setting')->insertJoke($data);
 			$id = $result[0];
 		} else { //修改
-			$this->checkFunction('JokeManage', "edit");
+			$this->checkFunction('AuditJoke', "edit");
 
 			$result = Model::factory('Setting')->updateJoke($id, $data);
 		}
@@ -228,24 +305,20 @@ class Controller_Admin_Setting extends AdminController {
 			}
 			Model::factory('Setting')->insertJokeTags($data);
 		}
-		return $this->redirect("admin/setting/joke_op?post=1&id=$id");
+		return $this->redirect("admin/setting/audit_op?post=1&id=$id");
 	}
-	public function action_joke_delete(){
-		$this->checkFunction('JokeManage', "delete");
+	public function action_audit_delete(){
+		$this->checkFunction('AuditJoke', "delete");
 		$page = intval($this->req('page'));
 		if ($page < 1) $page = 1;
-		$tid = intval($this->req('tid'));
-		if ($tid < 1) $tid = 0;
 		$key = $this->req('key');
 
 		$id 	= intval($this->request->query('id'));
 		if ($id < 1) $this->paramError();
 
-		$result = Model::factory('Setting')->deleteJoke($id);
-		if ($result) Model::factory('Setting')->deleteJokeTags($id);
-		return $this->redirect("admin/setting/joke_list?tid=$tid&key=$key&page=$page");
+		$result = Model::factory('Setting')->deleteUserJoke($id);
+		return $this->redirect("admin/setting/audit_list?key=$key&page=$page");
 	}
-	public function action_index(){}
 	//缓存管理
 	public function action_cache_list() {
 		$this->checkFunction("CacheManage");

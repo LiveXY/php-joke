@@ -629,8 +629,8 @@
 			}
 			$(".nav-tab-close").tooltip({ text: '正在加载数据，请等待...', type: 'process', width: 140, left: -185, top: 40 });
 			if (refIframe || null) {
-				if (top.window.frames[id + "Iframe"].location) top.window.frames[id + "Iframe"].location.reload();
-				else document.getElementById(id + "Iframe").contentDocument.location.reload();
+				if (top.window.frames[id + "Iframe"] && top.window.frames[id + "Iframe"].location) top.window.frames[id + "Iframe"].location.reload();
+				else if (document.getElementById(id + "Iframe") && document.getElementById(id + "Iframe").contentDocument) document.getElementById(id + "Iframe").contentDocument.location.reload();
 				//try {
 				//	(top.window.frames[id + "Iframe"] || document.getElementById(id + "Iframe").contentDocument).location.reload();
 				//} catch (ex) { }

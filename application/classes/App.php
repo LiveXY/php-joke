@@ -237,6 +237,7 @@ class App {
 		$ver = $obj->req('ver');
 		$network = $obj->req('network');
 		$vid = intval($obj->req('vid'));
+		$uname = $obj->req('uname');
 
 		if (!$locale) $locale = Util::determineLang();
 		$locale = $obj->getLocale($locale);
@@ -246,7 +247,7 @@ class App {
 		$obj->user = Model::factory('Sys')->getUserByName($uuid);
 
 		if (!$obj->user) {
-			$obj->uid = Model::factory("Sys")->register($uuid, '', $platform, $locale, $bundleid);
+			$obj->uid = Model::factory("Sys")->register($uuid, $uname, $platform, $locale, $bundleid);
 			if (!$obj->uid) exit('no user');
 
 			Util::SmallLog("mobile", "new:uid=".$obj->uid);

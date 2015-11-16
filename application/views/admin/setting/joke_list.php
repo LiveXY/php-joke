@@ -35,7 +35,7 @@
 			<tr>
 				<td class="pl5"><?=$info->jid?></td>
 				<td class="pl5"><?=$info->title?></td>
-				<td class="pl5 tdnofix"><?=$info->joke?></td>
+				<td class="pl5 tdnofix"><?=str_replace("\n", '<br/>', $info->joke)?></td>
 				<td class="pl5"><?php $vs = explode(';', $info->tags); foreach($vs as $t) {?><?= isset($tags[$t]) ? $tags[$t]->title : '' ?>;<?php }?></td>
 				<td class="pl5"><?=$info->likes?></td>
 				<td class="center"><?=date('Y-m-d H:i:s', $info->ltime)?></td>

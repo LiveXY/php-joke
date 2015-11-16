@@ -66,7 +66,7 @@ class App {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
 				'title'=> empty($v->title) ? '' : Util::aes_encode($obj->uid, $data['sign'], $v->title),
-				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
 			));
 		}
 		if ($tag == 1) {
@@ -93,7 +93,7 @@ class App {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
 				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
-				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
 				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'width'=>$v->width,
@@ -137,7 +137,7 @@ class App {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
 				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
-				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
 				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'likes'=>$v->likes,
@@ -197,7 +197,7 @@ class App {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
 				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
-				'text'=> Util::aes_encode($obj->uid, $data['sign'], $v->joke),
+				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
 				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'width'=>$v->width,

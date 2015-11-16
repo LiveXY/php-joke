@@ -17,7 +17,7 @@
 				<td class="pl5 t"><input type="text" class="input_text" name="txtTitle" value="<?= $info ? $info->title?:'' : "" ?>" /></td>
 			</tr><tr>
 				<th>内容：</th>
-				<td class="pl5"><textarea class="textarea" name="txtJoke"><?= $info ? $info->joke?:'' : "" ?></textarea></td>
+				<td class="pl5"><textarea class="textarea" name="txtJoke"><?= $info ? $info->joke ? str_replace('<br/>', "\n", $info->joke) :'' : "" ?></textarea></td>
 			</tr><tr>
 				<th>标签：</th>
 				<td class="pl5">

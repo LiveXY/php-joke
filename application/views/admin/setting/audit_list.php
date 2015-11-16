@@ -23,7 +23,7 @@
 			<tr>
 				<td class="pl5"><?=$info->jid?></td>
 				<td class="pl5"><?=$info->title?></td>
-				<td class="pl5 tdnofix"><?=$info->joke?></td>
+				<td class="pl5 tdnofix"><?=str_replace("\n", '<br/>', $info->joke)?></td>
 			   	<td class="center">
 					<?php if($user_right['edit']):?>
 					<a class="tab_open" id="userAudit<?=$info->jid ?>" href="<?=BASEURI?>admin/setting/audit_op?id=<?=$info->jid ?>"><img src="<?=RESOURCE?>images/ico/edit.gif" class="ico" /> 审核笑话</a>

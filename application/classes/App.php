@@ -35,7 +35,8 @@ class App {
 		$score = intval($obj->req('score'));
 		if (!empty($tags)) $tags = explode(';', trim($tags, ';'));
 		if ($id < 1 || empty($title) || empty($text) || empty($tags) || !is_array($tags) || $score < 1 || $score > 100) $obj->paramError();
-		$result = Model::factory('Setting')->updateUserJoke($id, array('status'=>1));
+		$result = Model::factory('Setting')->deleteUserJoke($id);
+		//$result = Model::factory('Setting')->updateUserJoke($id, array('status'=>1));
 		if ($result) {
 			$joke = array('title'=>$title, 'joke'=>$text, 'type'=>0, 'ltime'=>TIMESTAMP,'score'=>$score, 'tags'=> implode(';', $tags));
 			$result = Model::factory('Setting')->insertJoke($joke);

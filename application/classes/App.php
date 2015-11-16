@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class App {
+	public static function Down($obj) {
+		$t = 0;
+		$p = Util::getMobile();
+		if ($p && $p['iphone']) $t = 1;
+		if ($p && $p['ipad']) $t = 1;
+		if ($p && $p['android']) $t = 2;
+		echo View::factory('down', array('t'=>$t));
+	}
 	public static function AuditPost($obj){
 		$obj->checkData();
 		$admin = CacheManager::getAdmin($obj->uid);

@@ -1,7 +1,27 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class Util {
+	public static function getMobile() {
+		$ua = $_SERVER['HTTP_USER_AGENT'];
+		if (!$ua) return false;
 
+		$data = array(); $ua = strtolower($ua);
+		$android = strstr($ua, 'android');
+		$data['android'] = $android !== false;
+
+		//$wphone = strstr($ua, 'phone');
+		//$data['wphone'] = $wphone !== false;
+
+		$ipad = strstr($ua, 'ipad');
+		$data['ipad'] = $ipad !== false;
+
+		$iphone = strstr($ua, 'iphone');
+		$data['iphone'] = $data['ipad'] ? false : $iphone !== false;
+
+		//Util::SmallLog('ua', $ua);
+
+		return $data;
+	}
 	public static function aes_encode($uid, $key, $text){
 		$iv = substr($key, 0, 16 - strlen($uid)).$uid;
 		$crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $text, MCRYPT_MODE_CBC, $iv);

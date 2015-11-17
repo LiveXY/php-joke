@@ -92,9 +92,9 @@ class App {
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'title'=> empty($v->title) ? '' : Util::aes_encode($obj->uid, $data['sign'], $v->title),
 				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
-				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
+				'img'=> empty($v->img) ? '' : Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'width'=>$v->width,
 				'height'=>$v->height,
@@ -136,9 +136,9 @@ class App {
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'title'=> empty($v->title) ? '' : Util::aes_encode($obj->uid, $data['sign'], $v->title),
 				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
-				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
+				'img'=> empty($v->img) ? '' : Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'likes'=>$v->likes,
 				'shares'=>$v->shares,
@@ -196,9 +196,9 @@ class App {
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,
-				'title'=> Util::aes_encode($obj->uid, $data['sign'], $v->title),
+				'title'=> empty($v->title) ? '' : Util::aes_encode($obj->uid, $data['sign'], $v->title),
 				'text'=> Util::aes_encode($obj->uid, $data['sign'], str_replace("\n", '<br/>', $v->joke)),
-				'img'=> Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
+				'img'=> empty($v->img) ? '' : Util::aes_encode($obj->uid, $data['sign'], BASEURI.'client/upload/joke-img/'.$v->img),
 				'time'=>Util::formatTime2($v->ltime),
 				'width'=>$v->width,
 				'height'=>$v->height,

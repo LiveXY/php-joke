@@ -29,6 +29,7 @@
 				<th class="center">管理 <?php if ($user_right['add']):?><a href="<?=BASEURI?>admin/sys/user_op" id="addUser" class="tab_open"><img src="<?=RESOURCE?>images/ico/add.gif" class="ico" /> 添加用户</a><?php endif;?></th>
 				<th class="center">注册ip</th>
 				<th class="center">登录ip</th>
+				<th class="center">bundleid</th>
 			</tr>
 			<?php if(count($users)==0):?>
 			<tr><td colspan="26" class="center">暂无数据！ <?php if ($user_right['add']):?><a href="<?=BASEURI?>admin/sys/user_op" id="addUser" class="tab_open"><img src="<?=RESOURCE?>images/ico/add.gif" class="ico" /> 添加用户</a><?php endif;?></td></tr>
@@ -56,6 +57,7 @@
 				</td>
 				<td class="pl5"><?=$user->reg_ip?>(<?=IpLocation::getAddressByIP($user->reg_ip)?>)</td>
 				<td class="pl5"><?=$user->login_ip?>(<?=IpLocation::getAddressByIP($user->login_ip)?>)</td>
+				<td class="center"><?=$user->bundleid?></td>
 			</tr>
 			<?php endforeach;?>
 		</table>

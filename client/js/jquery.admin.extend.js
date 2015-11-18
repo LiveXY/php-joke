@@ -31,7 +31,7 @@
 				var golds = parseFloat(o.golds) + parseFloat(o.bonus_golds) + parseFloat(o.bank);
 				menu.find(".avatar").attr('src', o.avatar);
 				menu.find(".uid").text(uid);
-				menu.find(".uname").text(o.nickname + '(' + o.username + ')' + (o.gender == 1 ? '男': o.gender == 2 ? '女' : '保密'));
+				menu.find(".uname").text(o.nickname + '(' + o.uuid + ')' + (o.gender == 1 ? '男': o.gender == 2 ? '女' : '保密'));
 				menu.find(".regip").text(o.regip + "(" + o.reg_ip + ")");
 				menu.find(".regtime").text(o.reg_date);
 				menu.find(".loginip").text(o.loginip + (o.login_ip ? ("(" + o.login_ip + ")") : ""));

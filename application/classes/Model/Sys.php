@@ -16,7 +16,7 @@ class Model_Sys extends Model {
 
 		Model::factory("App")->logUserLogin(array('uid'=>$user->uid, 'utype'=>$type, 'ldate'=>TIMESTAMP, 'ip'=>Util::getIP(), 'ver'=>$ver));
 	}
-	public function register($username, $usernick = '', $utype = 'web', $locale = 'zh_CN') {
+	public function register($username, $usernick = '', $utype = 'web', $locale = 'zh_CN', $bundleid = '') {
 		$ip = Util::getIP();
 		$city = false;
 		try {
@@ -29,6 +29,7 @@ class Model_Sys extends Model {
 			'reg_ip' => $ip,
 			'reg_date' => TIMESTAMP,
 			'locale' => $locale,
+			'bundleid'=>$bundleid?:'',
 		);
 		if ($city) {
 			$member['regprovince'] = $city['region'];

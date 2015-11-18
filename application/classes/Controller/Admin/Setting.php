@@ -194,7 +194,6 @@ class Controller_Admin_Setting extends AdminController {
 	}
 	public function action_joke_post(){
 		$id 	= intval($this->request->query('id'));
-		if ($id < 1) $this->paramError();
 
 		$txtTitle				= $this->request->post('txtTitle');
 		$txtJoke				= $this->request->post('txtJoke');
@@ -277,6 +276,7 @@ class Controller_Admin_Setting extends AdminController {
 	}
 	public function action_audit_post(){
 		$id 	= intval($this->request->query('id'));
+		if ($id < 1) $this->paramError();
 
 		$txtTitle				= $this->request->post('txtTitle');
 		$txtJoke				= $this->request->post('txtJoke');

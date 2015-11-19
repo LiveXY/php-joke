@@ -16,8 +16,8 @@ class AppController extends BaseController {
 			$obj->locale = $obj->getLocale($obj->income['l']);
 			$obj->lang = $obj->getLang($obj->locale);
 			$obj->mobile = $obj->income['m'] == 1 ? true : false;
-			$obj->login($obj->uid);
-		} else if ($GLOBALS['user_id'] > 0) {
+			//$obj->login($obj->uid);
+		}/* else if ($GLOBALS['user_id'] > 0) {
 			$obj->uid = $GLOBALS['user_id'];
 			$obj->user = CacheManager::getUser($obj->uid);
 			if (!$obj->user) {
@@ -29,7 +29,7 @@ class AppController extends BaseController {
 				$obj->locale = $obj->getLocale($obj->user->locale);
 				$obj->lang = $obj->getLang($obj->locale);
 			}
-		} else {
+		}*/ else {
 			$obj->locale = $obj->getLocale(Util::determineLang());
 			$obj->lang = $obj->getLang($obj->locale);
 		}

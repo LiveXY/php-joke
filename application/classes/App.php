@@ -253,17 +253,18 @@ class App {
 		if (!$obj->user) {
 			$obj->uid = Model::factory("Sys")->register($uuid, $uname, $platform, $locale, $bundleid);
 			if (!$obj->uid) exit('no user');
-
-			Util::SmallLog("mobile", "new:uid=".$obj->uid);
+			//Util::SmallLog("mobile", "new:uid=".$obj->uid);
 		} else {
 			$obj->uid = $obj->user->uid;
 		}
+		if ($obj->uid < 100012) $obj->paramError();
 
-		$obj->user = $obj->login($obj->uid);
+		//$obj->user = $obj->login($obj->uid);
+		$obj->user = CacheManager::getUser($obj->uid);
+		if (!$obj->user) $obj->paramError();
 		App::updateLoginData($obj->user, 1, $ver, $uuid, $network);
 
 		$pkey = Util::makePkey($obj->uid, TIMESTAMP, $locale, 1);
-		if (!$obj->user) $obj->paramError();
 		return $obj->jsonp(array('ret'=>0, 'login'=>0, 'user'=>self::getUser($obj->user, $vid), 'sessionKey'=>$pkey));
 	}
 	public static function Logout($obj) {

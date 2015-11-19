@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
 class App {
+	public static function Messages(){
+		$data = array('ret'=>0);
+		return $obj->jsonp($data);
+	}
 	public static function Down($obj) {
 		$t = 0;
 		$p = Util::getMobile();

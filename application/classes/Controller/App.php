@@ -23,6 +23,7 @@ class Controller_App extends AppController {
 	public function action_likes() { App::Likes($this); } //喜欢
 	public function action_upload() { App::Upload($this); } //投稿
 	public function action_down() { App::Down($this); }
+	public function action_messages() { App::Messages($this); }
 
 	public function action_joke() { App::Joke($this); } //赞笑话
 	public function action_jokeLike() { App::JokeLike($this); } //赞笑话

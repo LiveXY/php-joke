@@ -18,14 +18,9 @@ class Model_App extends Model {
 		return $query->current()->count;
 	}
 	public function create_tables(){
-		$sql = "
-CREATE TABLE report_user_summary (
-  day integer PRIMARY KEY NOT NULL DEFAULT(0),
-  totals integer NOT NULL DEFAULT(0),
-  registers integer NOT NULL DEFAULT(0),
-  logins integer NOT NULL DEFAULT(0)
-);";
-return $this->db->query(Database::INSERT, $sql, true);
+		return true;
+		//$sql = "";
+		//return $this->db->query(Database::INSERT, $sql, true);
 	}
 
 	//更新管理员在线状态

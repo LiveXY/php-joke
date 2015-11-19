@@ -18,7 +18,7 @@ class Model_App extends Model {
 		return $query->current()->count;
 	}
 	public function create_tables(){
-		$sql = '
+		$sql = "
 CREATE TABLE report_platform_summary (
   day integer NOT NULL,
   platform varchar(50) NOT NULL DEFAULT(''),
@@ -26,7 +26,7 @@ CREATE TABLE report_platform_summary (
   registers integer NOT NULL DEFAULT(0),
   logins integer NOT NULL DEFAULT(0),
   PRIMARY KEY(day, platform)
-);';
+);";
 return $this->db->query(Database::INSERT, $sql, true);
 	}
 

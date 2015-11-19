@@ -12,7 +12,7 @@
 	<h2>最新笑话</h2>
 	<ul>
 	<?php foreach($jokes as $info):?>
-		<li><a href="<?=BASEURI?>joke/<?=$info->jid?>"><h3><?=$info->title ? $info->title : mb_substr($info->joke, 0, 10,"utf-8").'...'?></h3></a><span><?=mb_substr($info->joke, 0, 30,"utf-8")?></span></li>
+		<li><a href="<?=BASEURI?>joke/<?=$info->jid?>"><h3><?=$info->title ? $info->title : mb_substr($info->joke, 0, 10,"utf-8").'...'?></h3></a><span><?=mb_substr($info->joke, 0, 30,"utf-8")?>...</span></li>
 	<?php endforeach;?>
 	</ul>
 </body>

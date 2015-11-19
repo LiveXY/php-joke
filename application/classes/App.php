@@ -246,7 +246,7 @@ class App {
 		if (!$locale) $locale = Util::determineLang();
 		$locale = $obj->getLocale($locale);
 
-		if (!$uuid || !$platform || !$locale || !$bundleid) $obj->paramError();
+		if (!$uuid || !$platform || !$locale || !$bundleid || $uuid == 'admin') $obj->paramError();
 
 		$obj->user = Model::factory('Sys')->getUserByName($uuid);
 

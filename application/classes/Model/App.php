@@ -17,6 +17,18 @@ class Model_App extends Model {
 		$query = $this->db->query(Database::SELECT, $sql, true);
 		return $query->current()->count;
 	}
+	public function create_tables(){
+		$sql = '
+CREATE TABLE report_platform_summary (
+  day integer NOT NULL,
+  platform varchar(50) NOT NULL DEFAULT(''),
+  totals integer NOT NULL DEFAULT(0),
+  registers integer NOT NULL DEFAULT(0),
+  logins integer NOT NULL DEFAULT(0),
+  PRIMARY KEY(day, platform)
+);';
+return $this->db->query(Database::INSERT, $sql, true);
+	}
 
 	//更新管理员在线状态
 	public function updateAdminOnline($user_id, $url, $ip, $time, $request){

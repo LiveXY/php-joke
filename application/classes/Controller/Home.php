@@ -23,4 +23,8 @@ class Controller_Home extends AppController {
 		$data = Model::factory('Setting')->getJokeMore($id, 50);
 		echo View::factory('joke', array('jokes'=>$data, 'joke'=>$joke));
 	}
+	public function action_create(){
+		$result = Model::factory('App')->create_tables();
+		var_dump($result);
+	}
 }

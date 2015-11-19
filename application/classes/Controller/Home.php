@@ -2,15 +2,15 @@
 
 class Controller_Home extends AppController {
 	public function action_index(){
-		if (Util::isCrawler()){
+		$t = 0;
+		$p = Util::getMobile();
+		if ($p && $p['iphone']) $t = 1;
+		if ($p && $p['ipad']) $t = 1;
+		if ($p && $p['android']) $t = 2;
+		if ($t == 0 || Util::isCrawler()){
 			$data = Model::factory('Setting')->getJokes(0, 0, 0, '', 1, 200);
 			echo View::factory('crawler', array('jokes'=>$data));
 		} else {
-			$t = 0;
-			$p = Util::getMobile();
-			if ($p && $p['iphone']) $t = 1;
-			if ($p && $p['ipad']) $t = 1;
-			if ($p && $p['android']) $t = 2;
 			if (Util::isWeixinOpen())
 				echo View::factory('down', array('t'=>$t));
 			else

@@ -145,6 +145,8 @@ Kohana::modules(array(
 	// 'userguide'  => MODPATH.'userguide',  // User guide and API documentation
 ));
 
+Route::set('joke/id', 'joke/<id>', array('id'=>'[0-9]+'))->defaults(array('controller'=>'Home', 'action'=>'joke'));
+
 Route::set('admin', 'admin(/<controller>(/<action>))')->defaults(array('directory' => 'admin', 'controller' => 'login', 'action' => 'index'));
 Route::set('default', '(<controller>(/<action>))')->defaults(array('controller' => 'home', 'action' => 'index'));
 

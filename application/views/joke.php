@@ -8,10 +8,15 @@
 <meta name="keywords" content="笑话,搞笑,段子,短信">
 </head>
 <body>
-<?php if($t==1) {?>
-	<script type="text/javascript"> location.href = 'https://itunes.apple.com/cn/app/dared/id'; </script>
-<?php } elseif($t==2) {?>
-	<script type="text/javascript"> location.href = '<?=ROOTURL?>/joke.apk'; </script>
-<?php } ?>
+	<?php if ($joke) { ?>
+	<?php if ($joke->title) { ?><h1><?=$joke->title?></h1><?php } ?>
+	<h2><?=$joke->joke?></h2>
+	<?php } ?>
+	<h2>更多笑话</h2>
+	<ul>
+	<?php foreach($jokes as $info):?>
+		<li><a href="<?=BASEURI?>joke/<?=$info->jid?>"><h2><?=$info->title ? $info->title : mb_substr($info->joke, 0, 20,"utf-8").'...'?></h2></a></li>
+	<?php endforeach;?>
+	</ul>
 </body>
 </html>

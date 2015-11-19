@@ -41,6 +41,10 @@ class Model_Setting extends Model {
 		$sql .= " LIMIT {$limit} OFFSET {$offset}";
 		return $this->db->query(Database::SELECT, $sql, true);
 	}
+	public function getJokeMore($id, $top = 20) {
+		$sql = "select * from joke_info where jid<$id order by jid desc limit $top";
+		return $this->db->query(Database::SELECT, $sql, true);
+	}
 	public function getJokes($type = 0, $tid = 0, $cid = 0, $key = '', $page = 1, $pageSize = 10) {
 		$sql = '';
 		if ($tid == 0) {

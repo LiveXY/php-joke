@@ -306,9 +306,15 @@ class App {
 	//投稿
 	public static function Upload($obj){
 		$obj->checkData();
-		$text = KFilter::Filter($obj->req('text'));
+		$text = $obj->req('text');
 		if (!$text) return $obj->jsonp(array('ret'=>1, "msg" => $obj->lang['operator_failure']));
-		$result = Model::factory('App')->insertUserJoke(array('uid'=>$obj->uid, 'joke'=>$text, 'ltime'=>TIMESTAMP));
+		$result = false;
+		$admin = CacheManager::getAdmin($obj->uid);
+		if ($admin) {
+			$result = Model::factory('App')->insertJoke(array('joke'=>$text, 'ltime'=>TIMESTAMP, 'score'=>80));
+		} else {
+			$result = Model::factory('App')->insertUserJoke(array('uid'=>$obj->uid, 'joke'=>$text, 'ltime'=>TIMESTAMP));
+		}
 		if (!$result) return $obj->jsonp(array('ret'=>1, "msg" => $obj->lang['operator_failure']));
 		return $obj->jsonp(array('ret'=>0));
 	}

@@ -10,7 +10,7 @@ class Controller_App extends AppController {
 
 	public function paramError() { $this->jsonp(array("ret" => 4, "msg" => $this->lang['invalid_param'])); }
 	public function loginError() { $this->jsonp(array("ret" => 1, "msg" => $this->lang['reset_login'], 'relogin' => 1)); }
-	public function checkData() { if (!$this->income || $this->uid < 1 || !$this->user || !$this->lang) $this->loginError(); }
+	public function checkData() { if (!$this->income || $this->uid < 100012 || !$this->user || !$this->lang) $this->loginError(); }
 	public function errorKey($key, $code = 1) { $this->jsonp(array("ret" => $code, "msg" => $this->lang[$key])); }
 	public function errorMsg($msg, $code = 1) { $this->jsonp(array("ret" => $code, "msg" => $msg)); }
 

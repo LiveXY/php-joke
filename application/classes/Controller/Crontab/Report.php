@@ -9,8 +9,31 @@ class Controller_Crontab_Report extends BaseController {
 		if ($day == 0) $day = intval(date('Ymd'));
 		if ($day < 0) $day = intval(date('Ymd', strtotime($day.' day', time())));
 
-		$count = Model::factory('App')->crontab_report_day($day);
-		echo $count;
+		$info = Model::factory('App')->crontab_report_user_summary($day);
+		if ($info) {
+			$data = array('day'=>$day, 'totals'=>$info->totals, 'registers'=>$info->registers, 'logins'=>$info->logins);
+			$info = Model::factory('App')->insertReportUserSummary($data);
+		}
+		$list = Model::factory('App')->crontab_report_platform_summary($day);
+		if ($list) {
+			$r1 = $list['r1'];
+			$r2 = $list['r2'];
+			$r3 = $list['r3'];
+			$data = array();
+			foreach($r1 as $info) {
+				$bundleid = trim(str_replace('com.livexy.joke', '', $info->bundleid), "-");
+				$data[$bundleid] = array('totals'=>$info->count + 0, 'registers'=>0, 'logins'=>0);
+			}
+			foreach($r2 as $info) {
+				$bundleid = trim(str_replace('com.livexy.joke', '', $info->bundleid), "-");
+				$data[$bundleid]['registers'] = $info->count + 0;
+			}
+			foreach($r3 as $info) {
+				$bundleid = trim(str_replace('com.livexy.joke', '', $info->bundleid), "-");
+				$data[$bundleid]['logins'] = $info->count + 0;
+			}
+			Model::factory('App')->insertReportPlatformSummary($day, $data);
+		}
 		exit;
 	}
 

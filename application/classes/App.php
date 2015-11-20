@@ -316,7 +316,7 @@ class App {
 		$result = false;
 		$admin = CacheManager::getAdmin($obj->uid);
 		if ($admin) {
-			$result = Model::factory('App')->insertJoke(array('joke'=>$text, 'ltime'=>TIMESTAMP, 'score'=>80));
+			$result = Model::factory('Setting')->insertJoke(array('joke'=>$text, 'ltime'=>TIMESTAMP, 'score'=>80));
 		} else {
 			$result = Model::factory('App')->insertUserJoke(array('uid'=>$obj->uid, 'joke'=>$text, 'ltime'=>TIMESTAMP));
 		}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="baidu-site-verification" content="IkYLMmQfq8" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <title>猪猪笑话－搞笑段子、短信、无广告并且开源</title>

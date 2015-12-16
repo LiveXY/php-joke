@@ -29,8 +29,9 @@ class Model_Setting extends Model {
 		$sql = "update user_joke set ".$this->set($data)." where jid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
-	public function audit() {
-		$sql = "select * from user_joke order by random() limit 10";
+	public function audit($key) {
+		$ex = empty($key) ? '' : " and (title like '%$key%' or joke like '%$key%') ";
+		$sql = "select * from user_joke where 1=1 $ex order by random() limit 10";
 		return $this->db->query(Database::SELECT, $sql, true);
 	}
 	public function myJokes($uid, $page = 1, $pageSize = 10) {
@@ -40,6 +41,10 @@ class Model_Setting extends Model {
 		$limit = $pageSize;
 		$sql .= " LIMIT {$limit} OFFSET {$offset}";
 		return $this->db->query(Database::SELECT, $sql, true);
+	}
+	public function getJokeCountByMax($id) {
+		$sql = "select count(jid) count from joke_info where jid>$id";
+		return intval($this->db->query(Database::SELECT, $sql, true)->current()->count);
 	}
 	public function getJokeMore($id, $top = 20) {
 		$sql = "select * from joke_info where jid<$id order by jid desc limit $top";

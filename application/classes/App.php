@@ -3,6 +3,10 @@
 class App {
 	public static function Messages($obj){
 		$data = array('ret'=>0);
+		$maxJoke = intval($obj->req('maxJoke'));
+		if ($maxJoke > 0) {
+			$data['newJokes'] = Model::factory('Setting')->getJokeCountByMax($maxJoke);
+		}
 		return $obj->jsonp($data);
 	}
 	public static function Down($obj) {
@@ -62,10 +66,11 @@ class App {
 		if (!$admin) $obj->paramError();
 
 		$tag = intval($obj->req('tag'));
+		$key = $obj->req('key');
 
 		$data = array('ret'=>0, 'list'=>array(), 'sign'=>md5(uniqid()));
 
-		$list = Model::factory('Setting')->audit();
+		$list = Model::factory('Setting')->audit($key);
 		foreach ($list as $v) {
 			array_push($data['list'], array(
 				'id'=>$v->jid,

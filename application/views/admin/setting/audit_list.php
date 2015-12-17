@@ -49,7 +49,7 @@ $("#btnSearch").click(function () {
 $('.pager').pager({
 	align: 'left',
 	page: <?=$page?>,
-	pageSize: 15,
+	pageSize: 25,
 	total: <?=$totals?>,
 	showGo: true,
 	url: "?page={0}&key=" + $("#key").val()

@@ -34,6 +34,14 @@ class Controller_Crontab_Report extends BaseController {
 			}
 			Model::factory('App')->insertReportPlatformSummary($day, $data);
 		}
+
+		$list = Model::factory('Setting')->audit('',1);
+		if ($list && count($list) == 1) {
+			$v = $list[0];
+			$joke = array('title'=>$v->title, 'joke'=>$v->joke, 'type'=>0, 'ltime'=>TIMESTAMP,'score'=>10, 'tags'=> '');
+			$result = Model::factory('Setting')->insertJoke($joke);
+			if ($result) Model::factory('Setting')->deleteUserJoke($v->jid);
+		}
 		exit;
 	}
 

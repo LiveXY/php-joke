@@ -29,9 +29,9 @@ class Model_Setting extends Model {
 		$sql = "update user_joke set ".$this->set($data)." where jid={$id}";
 		return $this->db->query(Database::UPDATE, $sql, true);
 	}
-	public function audit($key) {
+	public function audit($key, $top = 10) {
 		$ex = empty($key) ? '' : " and (title like '%$key%' or joke like '%$key%') ";
-		$sql = "select * from user_joke where 1=1 $ex order by random() limit 10";
+		$sql = "select * from user_joke where 1=1 $ex order by random() limit $top";
 		return $this->db->query(Database::SELECT, $sql, true);
 	}
 	public function myJokes($uid, $page = 1, $pageSize = 10) {
